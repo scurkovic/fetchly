@@ -5,7 +5,6 @@ use reqwest::Client;
 use serde::Deserialize;
 
 const STORE_KEY_FRAGMENT: &str = "dugo_selo";
-const STORE_KEY_ID: &str = "0335";
 
 pub async fn fetch(client: &Client, date: NaiveDate) -> Result<Vec<RawProduct>> {
     let index_url = format!(
@@ -28,10 +27,7 @@ pub async fn fetch(client: &Client, date: NaiveDate) -> Result<Vec<RawProduct>> 
     let entry = index
         .files
         .into_iter()
-        .find(|f| {
-            let n = f.name.to_lowercase();
-            n.contains(STORE_KEY_FRAGMENT) && n.contains(STORE_KEY_ID)
-        })
+        .find(|f| f.name.to_lowercase().contains(STORE_KEY_FRAGMENT))
         .ok_or_else(|| anyhow!("SPAR: Dugo Selo entry not found for {}", date))?;
 
     // Download the CSV (Windows-1250 encoded)
